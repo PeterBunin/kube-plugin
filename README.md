@@ -2,17 +2,17 @@
 kubectl plugin with bash  
 add permissions
 ````
-chmod +x my-top-plugin
+chmod +x kubeplugin
 ````
 Copy plugin to /usr/local/bin
 ```
-sudo mv my-top-plugin /usr/local/bin/kubectl-mytopplugin
+sudo mv kubeplugin /usr/local/bin/kubectl-kubeplugin
 ```
 usage  
-kubectl mytopplugin pod/node  
+kubectl kubeplugin pod/node  
 For pod option default namespace is kube-system. You can choose another namespace, if you want
 ```
-kubectl mytopplugin pod
+kubectl kubeplugin pod
 ```
 example output
 ```
@@ -30,7 +30,7 @@ traefik-f4564c4f4-2bx42                            | 1m         | 30Mi          
 
 and for node
 ```
-kubectl mytopplugin node
+kubectl kubeplugin node
 ```
 example ouput
 ```
