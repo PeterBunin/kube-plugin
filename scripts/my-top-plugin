@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Check if required arguments are provided
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Usage: $0 <node_or_pod> [namespace]"
+    exit 1
+fi
+
+# Capture command-line arguments
+resource_type=$1
+namespace=${2:-"kube-system"} # Default to "kube-system" namespace if no namespace provided
+
+# Check if the resource type is valid
+if [ "$resource_type" != "node" ] && [ "$resource_type" != "pod" ]; then
+    echo "Invalid resource type. Please specify 'node' or 'pod'."
+    exit 1
+fi
+
+# Retrieve resource usage statistics from Kubernetes using kubectl top
+if [ "$resource_type" == "node" ]; then
+    usage=$(kubectl top nodes)
+else
+    usage=$(kubectl top pods -n "$namespace")
+fi
+
+# Print table headers
+printf "%-50s | %-10s | %-20s | %-10s\n" "Name" "CPU" "Memory" "Namespace"
+printf "%0.s-" {1..95}
+printf "\n"
+
+# Read each line and format output
+while read -r line; do
+    # Extract name, CPU, and memory from the output
+    name=$(echo "$line" | awk '{print $1}')
+    cpu=$(echo "$line" | awk '{print $2}')
+    memory=$(echo "$line" | awk '{print $3}')
+
+    # Output the statistics to the console in a formatted table
+    printf "%-50s | %-10s | %-20s | %-10s\n" "$name" "$cpu" "$memory" "$namespace"
+done <<< "$usage"
